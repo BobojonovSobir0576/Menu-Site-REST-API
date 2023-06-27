@@ -22,7 +22,7 @@ class ProductSaveSerializers(serializers.ModelSerializer):
         fields = ['id','full_name','phone','detailed_data','files','restaurant']
     
     
-class ProductListSerializers(serializers.ModelSerializer):
+class ProductSaveListSerializers(serializers.ModelSerializer):
     restaurant = RestaurantSerializers(read_only=True)
     class Meta:
         model = SaveProduct

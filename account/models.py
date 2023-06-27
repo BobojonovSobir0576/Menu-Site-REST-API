@@ -40,7 +40,7 @@ class Product(models.Model):
 class SaveProduct(models.Model):
     full_name = models.CharField(max_length=150,null=True,blank=True)
     phone = models.CharField(max_length=150,null=True,blank=True)
-    detailed_data = models.JSONField()
+    detailed_data = models.JSONField(null=True,blank=True)
     files = models.FileField(blank=True,null=True)
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,blank=True)
     created_at = models.DateField(auto_now_add=True)

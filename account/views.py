@@ -215,7 +215,7 @@ class ProductSaveView(APIView):
     
     def get(self,request,format=None):
         save_product  = SaveProduct.obj.get_product_with_author(request.user)
-        serializers = ProductListSerializers(save_product,many=True)
+        serializers = ProductSaveListSerializers(save_product,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
 
@@ -225,7 +225,7 @@ class ProductSaveDetailsView(APIView):
     
     def get(self,request,id,format=None):
         save_product  = SaveProduct.obj.get_by_id(id)
-        serializers = ProductListSerializers(save_product,many=True)
+        serializers = ProductSaveListSerializers(save_product,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
