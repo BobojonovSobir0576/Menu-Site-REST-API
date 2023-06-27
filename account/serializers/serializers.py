@@ -36,7 +36,7 @@ class UserPorfilesSerializers(serializers.ModelSerializer):
 class UserListSerializers(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username','groups','first_name','last_name','password']
+        fields = ['id','username','groups','first_name','last_name','password']
         
     def create(self, validated_data):
         get_role = Group.objects.filter(id = 2).first()

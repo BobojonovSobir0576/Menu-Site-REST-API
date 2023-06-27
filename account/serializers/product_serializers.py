@@ -20,7 +20,7 @@ class CatalogSerializers(serializers.ModelSerializer):
 class ProductListSerializers(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name', 'img', 'price','gramms','description','catalog']
+        fields = ['id','name', 'img', 'price','gramms','description','catalog']
     
     def create(self, validated_data):
         get_catalog = Catalog.objects.filter(restaurant__author = self.context.get('user')).first()
@@ -47,6 +47,6 @@ class ProductDeatilSerializers(serializers.ModelSerializer):
     catalog = CatalogSerializers(read_only=True)
     class Meta:
         model = Product
-        fields = ['name', 'img', 'price','gramms','description','catalog']
+        fields = ['id','name', 'img', 'price','gramms','description','catalog']
         
     

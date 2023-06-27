@@ -20,7 +20,7 @@ class RestaurantSerializers(serializers.ModelSerializer):
 class CatalogListSerializers(serializers.ModelSerializer):
     class Meta:
         model = Catalog
-        fields = ['name', 'img', 'restaurant']
+        fields = ['id','name', 'img', 'restaurant']
     
     def create(self, validated_data):
         get_restaurant = Restaurant.objects.filter(author = self.context.get('user')).first()
@@ -41,6 +41,6 @@ class CatalogDeatilSerializers(serializers.ModelSerializer):
     restaurant = RestaurantSerializers(read_only=True)
     class Meta:
         model = Catalog
-        fields = ['name', 'img', 'restaurant']
+        fields = ['id','name', 'img', 'restaurant']
         
     
