@@ -22,7 +22,6 @@ class Catalog(models.Model):
     img = models.ImageField(upload_to = 'catalog/')
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,blank=True)
     
-    
     def __str__(self):
         return self.name
     

@@ -82,6 +82,11 @@ class CatalogListViews(APIView):
     render_classes = [UserRenderers]
     perrmisson_class = [IsAuthenticated]
     
+    def get(self, request, format=None):
+        catalogs = Catalog.objects.prefetch_related('restaurant').filter(restaurant__author = request.user)
+        serializers = CatalogDeatilSerializers(catalogs,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
+    
     def post(self,request,format=None):
         serializers = CatalogListSerializers(data=request.data,context={'img':request.FILES.get('img',None),'user':request.user})
         if serializers.is_valid(raise_exception=True):
@@ -116,6 +121,11 @@ class CatalogDetailViews(APIView):
 class ProductListViews(APIView):
     render_classes = [UserRenderers]
     perrmisson_class = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        products = Product.objects.prefetch_related('catalog').filter(catalog__restaurant__author = request.user)
+        serializers = ProductDeatilSerializers(products,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
     
     def post(self,request,format=None):
         serializers = ProductListSerializers(data=request.data,context={'img':request.FILES.get('img',None),'user':request.user})
@@ -152,6 +162,12 @@ class ProductDetailViews(APIView):
 class CustomUserListViews(APIView):
     render_classes = [UserRenderers]
     perrmisson_class = [IsAuthenticated]
+    
+    def get(self, request, format=None):
+        servants = User.objects.filter(groups__name__in = ['Servant'])
+        restaurant = [Restaurant.objects.prefetch_related('author').filter(author = i).values('author__first_name','author__last_name','author__username') for i in servants ]
+        return Response(restaurant)
+    
     
     def post(self,request,format=None):
         serializers = UserListSerializers(data=request.data,context={'user':request.user})

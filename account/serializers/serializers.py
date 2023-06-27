@@ -39,7 +39,7 @@ class UserListSerializers(serializers.ModelSerializer):
         fields = ['username','groups','first_name','last_name','password']
         
     def create(self, validated_data):
-        get_role = Group.objects.filter(id = 2)[0]
+        get_role = Group.objects.filter(id = 2).first()
         create = User.objects.create(
             username = validated_data['username'],
             first_name = validated_data['first_name'],
