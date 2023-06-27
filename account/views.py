@@ -165,7 +165,7 @@ class CustomUserListViews(APIView):
     
     def get(self, request, format=None):
         servants = User.objects.filter(groups__name__in = ['Servant'])
-        restaurant = [Restaurant.objects.prefetch_related('author').filter(author = i).values('author__first_name','author__last_name','author__username') for i in servants ]
+        restaurant = [Restaurant.objects.prefetch_related('author').filter(author = i).values('author__first_name','author__last_name','author__username','author__id') for i in servants ]
         return Response(restaurant)
     
     

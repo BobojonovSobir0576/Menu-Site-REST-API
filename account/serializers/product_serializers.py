@@ -23,14 +23,14 @@ class ProductListSerializers(serializers.ModelSerializer):
         fields = ['id','name', 'img', 'price','gramms','description','catalog']
     
     def create(self, validated_data):
-        get_catalog = Catalog.objects.filter(restaurant__author = self.context.get('user')).first()
+        # get_catalog = Catalog.objects.filter(restaurant__author = self.context.get('user')).first()
         create = Product.objects.create(
             name = validated_data.get('name'),
             img = self.context.get('img'),
             price = validated_data.get('price'),
             gramms = validated_data.get('gramms'),
             description = validated_data.get('description'),
-            catalog = get_catalog
+            catalog = validated_data['catalog_id']
         )
         return create
     
