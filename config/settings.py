@@ -6,6 +6,8 @@ from environs import Env
 import os
 import sys
 
+from dotenv import load_dotenv
+load_dotenv()
 
 env = Env()
 env.read_env()
@@ -18,13 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 # SECRET_KEY = 'django-insecure-ppm1fn-f_epqtox5fs1l&-59@r=z*-0(*5l)y0f$wy)b20!8pu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.str("DEBUG")
+DEBUG = str(os.getenv('DEBUG'))
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+ALLOWED_HOSTS = list(os.getenv('ALLOWED_HOSTS'))
 
 
 # Application definition

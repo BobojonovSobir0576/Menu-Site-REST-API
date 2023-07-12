@@ -13,7 +13,6 @@ idna==3.4
 jsonschema==4.17.3
 marshmallow==3.19.0
 packaging==23.1
-PaycomUz==3.0
 payme-pkg==2.2
 Pillow==9.5.0
 PyJWT==2.7.0
@@ -24,3 +23,4 @@ requests==2.31.0
 sqlparse==0.4.4
 tzdata==2023.3
 urllib3==2.0.3
+uuid==1.30
