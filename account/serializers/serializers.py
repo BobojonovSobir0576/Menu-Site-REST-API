@@ -23,7 +23,7 @@ class UserLoginSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['username','password']
+        fields = ['username', 'password']
         
 
 class UserPorfilesSerializers(serializers.ModelSerializer):
@@ -31,7 +31,8 @@ class UserPorfilesSerializers(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['username','groups','first_name','last_name',]
+        fields = ['username','groups','first_name','last_name', ]
+        
         
 class UserListSerializers(serializers.ModelSerializer):
     class Meta:

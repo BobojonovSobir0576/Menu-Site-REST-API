@@ -25,8 +25,6 @@ import jsonschema
 from jsonschema import Draft7Validator
 
 
-
-
 def get_token_for_user(user):
     
     refresh = RefreshToken.for_user(user)
@@ -44,13 +42,15 @@ class UserLoginView(APIView):
         if serializers.is_valid(raise_exception=True):
             username = serializers.data['username']
             password = serializers.data['password']
-            user = authenticate(username=username,password=password)    
-            get_restaurant = Restaurant.objects.check_is_payment(user)
-            if user is not None:
+            if username=='' and password=='':
+                return Response({'error':{'none_filed_error':['Username or password is not write']}},status=status.HTTP_204_NO_CONTENT)
+            user = authenticate(username=username, password=password)    
+            if user is None:
+                return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
+            else:
+                get_restaurant = Restaurant.objects.check_is_payment(user)
                 token = get_token_for_user(user)
                 return Response({'token':token,'message':serializers.data,'is_payment':get_restaurant},status=status.HTTP_200_OK)
-            else:
-                return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 

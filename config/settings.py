@@ -1,6 +1,15 @@
 from pathlib import Path
 from datetime import timedelta
 
+from environs import Env
+
+import os
+import sys
+
+
+env = Env()
+env.read_env()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -9,12 +18,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ppm1fn-f_epqtox5fs1l&-59@r=z*-0(*5l)y0f$wy)b20!8pu'
+SECRET_KEY = env.str("SECRET_KEY")
+# SECRET_KEY = 'django-insecure-ppm1fn-f_epqtox5fs1l&-59@r=z*-0(*5l)y0f$wy)b20!8pu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.str("DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 
 # Application definition
@@ -32,8 +42,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
+    'payme',
     
     'account',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +87,22 @@ SIMPLE_JWT = {
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
 
     'JTI_CLAIM': 'jti',
-
 }
+
+
+
+PAYME: dict = {
+    'PAYME_ID': '5e730e8e0b852a417aa49ceb',
+    'PAYME_KEY': 'ZPDODSiTYKuX0jyO7Kl2to4rQbNwG08jbghj',
+    'PAYME_URL': 'https://checkout.test.paycom.uz/api',
+    'PAYME_CALL_BACK_URL': 'https://www.youtube.com',
+    'PAYME_MIN_AMOUNT': 1000,
+    'PAYME_ACCOUNT': 'order_id',
+}
+
+
+
+
 
 ROOT_URLCONF = 'config.urls'
 
@@ -162,3 +188,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:5173",
     "http://31.129.97.46",
 ]
+
+
+
