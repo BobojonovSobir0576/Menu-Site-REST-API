@@ -140,12 +140,12 @@ class CatalogDetailViews(APIView):
     perrmisson_class = [IsAuthenticated]
     
     def get(self,request,id, format=None):
-        queryset = Catalog.objects.filter(id = id)
+        queryset = get_object_or_404(Catalog,id=id)
         serializers = CatalogDeatilSerializers(queryset,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
-        queryset = Catalog.objects.filter(id = id)[0]
+        queryset = get_object_or_404(Catalog,id=id)
         serializers = CatalogDeatilSerializers(instance=queryset, data=request.data, partial=True, context={'img':request.FILES.get('img',None)})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
@@ -153,7 +153,7 @@ class CatalogDetailViews(APIView):
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
-        queryset = Catalog.objects.filter(id = id)[0]
+        queryset = get_object_or_404(Catalog,id=id)
         queryset.delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
@@ -180,12 +180,12 @@ class ProductDetailViews(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,id, format=None):
-        queryset = Product.objects.filter(id = id)
+        queryset = get_object_or_404(Product,id=id)
         serializers = ProductDeatilSerializers(queryset,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
-        queryset = Product.objects.filter(id = id)[0]
+        queryset = get_object_or_404(Product,id=id)
         serializers = ProductDeatilSerializers(instance=queryset, data=request.data, partial=True, context={'img':request.FILES.get('img',None)})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
@@ -193,7 +193,7 @@ class ProductDetailViews(APIView):
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
-        queryset = Product.objects.filter(id = id)[0]
+        queryset = get_object_or_404(Product,id=id)
         queryset.delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
@@ -222,12 +222,12 @@ class CustomUserDetailViews(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,id, format=None):
-        queryset = User.objects.filter(id = id)
+        queryset = get_object_or_404(User,id=id)
         serializers = UserPorfilesSerializers(queryset,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
-        queryset = User.objects.filter(id = id)[0]
+        queryset = get_object_or_404(User,id=id)
         serializers = UserListSerializers(instance=queryset, data=request.data, partial=True)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
@@ -235,7 +235,7 @@ class CustomUserDetailViews(APIView):
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
-        queryset = User.objects.filter(id = id)[0]
+        queryset = get_object_or_404(User,id=id)
         queryset.delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
@@ -264,12 +264,12 @@ class ProductSaveDetailsView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,id,format=None):
-        save_product  = SaveProduct.obj.get_by_id(id)
+        save_product  = get_object_or_404(SaveProduct,id=id)
         serializers = ProductSaveListSerializers(save_product,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
-        get_by_id = SaveProduct.obj.get_by_id(id)[0]
+        get_by_id = get_object_or_404(SaveProduct,id=id)
         serializer=ProductSaveSerializers(instance=get_by_id,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save(files = request.FILES.get('files',None))
@@ -277,5 +277,5 @@ class ProductSaveDetailsView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
-        get_by_id = SaveProduct.obj.get_by_id(id)[0].delete()
+        get_by_id = get_object_or_404(SaveProduct,id=id).delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)

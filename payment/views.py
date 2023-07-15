@@ -53,9 +53,9 @@ class Payment(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self,request,unique_id,format=None):
+        get_token = get_object_or_404(Order,unique_id=unique_id)
         amount = request.data['amount']   
         receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=1)
-        get_token = Order.objects.filter(unique_id=unique_id).first()
         receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
         restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).update(create_at = date.today(),is_payment=True,price=amount)
         return Response({'data':'Success'},status=status.HTTP_200_OK)
