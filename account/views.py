@@ -137,7 +137,7 @@ class CatalogListViews(APIView):
 #CATALOG
 class CatalogDetailViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,id, format=None):
         queryset = get_object_or_404(Catalog,id=id)
