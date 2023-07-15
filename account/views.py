@@ -149,7 +149,7 @@ class CatalogDetailViews(APIView):
         serializers = CatalogDeatilSerializers(instance=queryset, data=request.data, partial=True, context={'img':request.FILES.get('img',None)})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response({'message':'updated successfully'},status=status.HTTP_200_OK)
+            return Response(serializers.data,status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
@@ -189,7 +189,7 @@ class ProductDetailViews(APIView):
         serializers = ProductDeatilSerializers(instance=queryset, data=request.data, partial=True, context={'img':request.FILES.get('img',None)})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response({'message':'updated successfully'},status=status.HTTP_200_OK)
+            return Response(serializers.data,status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
@@ -231,7 +231,7 @@ class CustomUserDetailViews(APIView):
         serializers = UserListSerializers(instance=queryset, data=request.data, partial=True)
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response({'message':'updated successfully'},status=status.HTTP_200_OK)
+            return Response(serializers.data,status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
