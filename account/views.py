@@ -141,7 +141,7 @@ class CatalogDetailViews(APIView):
     
     def get(self,request,id, format=None):
         queryset = get_object_or_404(Catalog,id=id)
-        serializers = CatalogDeatilSerializers(queryset,many=True)
+        serializers = CatalogDeatilSerializers(queryset)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
@@ -181,7 +181,7 @@ class ProductDetailViews(APIView):
     
     def get(self,request,id, format=None):
         queryset = get_object_or_404(Product,id=id)
-        serializers = ProductDeatilSerializers(queryset,many=True)
+        serializers = ProductDeatilSerializers(queryset)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
@@ -223,7 +223,7 @@ class CustomUserDetailViews(APIView):
     
     def get(self,request,id, format=None):
         queryset = get_object_or_404(User,id=id)
-        serializers = UserPorfilesSerializers(queryset,many=True)
+        serializers = UserPorfilesSerializers(queryset)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
@@ -265,7 +265,7 @@ class ProductSaveDetailsView(APIView):
     
     def get(self,request,id,format=None):
         save_product  = get_object_or_404(SaveProduct,id=id)
-        serializers = ProductSaveListSerializers(save_product,many=True)
+        serializers = ProductSaveListSerializers(save_product)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
