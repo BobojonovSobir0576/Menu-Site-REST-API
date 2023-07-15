@@ -100,7 +100,7 @@ class UserLoginView(APIView):
 
 class UserProfilesView(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,format=None):
         serializer = UserPorfilesSerializers(request.user)
@@ -120,7 +120,7 @@ class UserLogoutView(APIView):
 
 class CatalogListViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         catalogs = Catalog.objects.prefetch_related('restaurant').filter(restaurant__author = request.user)
@@ -160,7 +160,7 @@ class CatalogDetailViews(APIView):
 # PRODUCT
 class ProductListViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         products = Product.objects.prefetch_related('catalog').filter(catalog__restaurant__author = request.user)
@@ -177,7 +177,7 @@ class ProductListViews(APIView):
 
 class ProductDetailViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,id, format=None):
         queryset = Product.objects.filter(id = id)
@@ -201,7 +201,7 @@ class ProductDetailViews(APIView):
 #Servant
 class CustomUserListViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
         servants = User.objects.filter(groups__name__in = ['Servant'])
@@ -219,7 +219,7 @@ class CustomUserListViews(APIView):
 
 class CustomUserDetailViews(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,id, format=None):
         queryset = User.objects.filter(id = id)
@@ -243,7 +243,7 @@ class CustomUserDetailViews(APIView):
     
 class ProductSaveView(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def post(self,request,format=None):
         restaurant = Restaurant.objects.filter(author = request.user)[0]
@@ -261,7 +261,7 @@ class ProductSaveView(APIView):
 
 class ProductSaveDetailsView(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,id,format=None):
         save_product  = SaveProduct.obj.get_by_id(id)

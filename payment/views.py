@@ -34,7 +34,7 @@ payment = PaymeSubscribeReceipts(
 
 class VirifyCardView(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def post(self,request,format=None):
         token = request.data['token']
@@ -50,7 +50,7 @@ class VirifyCardView(APIView):
 
 class Payment(APIView):
     render_classes = [UserRenderers]
-    perrmisson_class = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def post(self,request,unique_id,format=None):
         amount = request.data['amount']   
