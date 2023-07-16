@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponsePermanentRedirect
@@ -5,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import *
 from datetime import date, timedelta
+from django.db.models import Q
 
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from rest_framework import generics, permissions, status, views
@@ -13,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import filters
 
 from account.serializers.serializers import *
 from account.serializers.res_serializers import *
@@ -23,7 +26,6 @@ from account.models import *
 
 import jsonschema,random
 from jsonschema import Draft7Validator
-
 from payme.receipts.subscribe_receipts import *
 
 
@@ -109,6 +111,7 @@ class UserProfilesView(APIView):
     
 class UserLogoutView(APIView):
     permission_classes  = [IsAuthenticated]
+    render_classes = [UserRenderers]
     
     def post(self, request):
         tokens = OutstandingToken.objects.filter(user_id=request.user.id)
@@ -117,7 +120,7 @@ class UserLogoutView(APIView):
 
         return Response(status=status.HTTP_205_RESET_CONTENT)
     
-
+#CATALOG
 class CatalogListViews(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
@@ -134,7 +137,7 @@ class CatalogListViews(APIView):
             return Response(serializers.data,status=status.HTTP_201_CREATED)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
-#CATALOG
+
 class CatalogDetailViews(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
@@ -173,8 +176,24 @@ class ProductListViews(APIView):
             serializers.save()
             return Response(serializers.data,status=status.HTTP_201_CREATED)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
-    
 
+
+class ProductFilterView(generics.ListAPIView):
+    render_classes = [UserRenderers]
+    permission_classes = [IsAuthenticated]
+    queryset = Product.objects.all()
+    serializer_class = ProductDeatilSerializers
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name',]
+    
+    def get(self, request, format=None):
+        search_name = request.query_params.get('search_name', '')
+        print(search_name)
+        product = Product.objects.filter((Q(name__icontains=search_name)))
+        serializers = self.serializer_class(product, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+    
 class ProductDetailViews(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
@@ -240,7 +259,6 @@ class CustomUserDetailViews(APIView):
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
     
-    
 class ProductSaveView(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
@@ -258,6 +276,16 @@ class ProductSaveView(APIView):
         serializers = ProductSaveListSerializers(save_product,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
+
+class ProductSaveFilterView(generics.ListAPIView):
+    render_classes = [UserRenderers]
+    permission_classes = [IsAuthenticated]
+    queryset = SaveProduct.obj.all()
+    serializer_class = ProductSaveListSerializers
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['full_name','phone']
+    
+
 
 class ProductSaveDetailsView(APIView):
     render_classes = [UserRenderers]
