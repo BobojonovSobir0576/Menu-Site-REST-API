@@ -19,5 +19,7 @@ urlpatterns = [
     path('product_save/',views.ProductSaveView.as_view()),
     path('filters_product_save/',views.ProductSaveFilterView.as_view()),
     path('product_save_details/<int:id>/',views.ProductSaveDetailsView.as_view()),
+    
+    path('catalog_product/<int:id>/',views.CatalogProductView.as_view()),
 
 ]

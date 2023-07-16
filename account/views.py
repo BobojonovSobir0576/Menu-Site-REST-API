@@ -307,3 +307,14 @@ class ProductSaveDetailsView(APIView):
     def delete(self,request,id,format=None):
         get_by_id = get_object_or_404(SaveProduct,id=id).delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
+    
+    
+class CatalogProductView(APIView):
+    render_classes = [UserRenderers]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,id,format=None):
+        get_catalog = get_object_or_404(Catalog,id=id)
+        products = Product.objects.prefetch_related('catalog').filter(catalog = get_catalog.id,catalog__restaurant__author = request.user )
+        serializers = ProductDeatilSerializers(products,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
