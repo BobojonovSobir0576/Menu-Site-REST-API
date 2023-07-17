@@ -14,7 +14,7 @@ from account.models import *
 class RestaurantSerializers(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ['id','name','price',]
+        fields = ['__all__']
 
 
 class CatalogListSerializers(serializers.ModelSerializer):
