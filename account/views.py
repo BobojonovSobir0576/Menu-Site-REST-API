@@ -63,19 +63,22 @@ class UserLoginView(APIView):
     def post(self,request,format=None):
         serializers = UserLoginSerializers(data=request.data, partial=True)
         if serializers.is_valid(raise_exception=True):
+            
             username = serializers.data['username']
             password = serializers.data['password']
             token = ''
             if username=='' and password=='':
                 return Response({'error':{'none_filed_error':['Username or password is not write']}},status=status.HTTP_204_NO_CONTENT)
             user = authenticate(username=username, password=password)    
+            print(user)
+            get_token = Order.objects.filter(restaurant__author=user).first()
             if user is None:
                 return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
             else:
                 token = get_token_for_user(user)
                 get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
                 get_restaurant = Restaurant.objects.check_is_payment(user)
-                get_token = Order.objects.filter(restaurant__author=user).first()
+                
                 print(get_token)
                 if get_restaurant:
                     print(1)
