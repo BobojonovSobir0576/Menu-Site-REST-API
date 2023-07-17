@@ -93,9 +93,9 @@ SIMPLE_JWT = {
 
 
 PAYME: dict = {
-    'PAYME_ID': '5e730e8e0b852a417aa49ceb',
-    'PAYME_KEY': 'ZPDODSiTYKuX0jyO7Kl2to4rQbNwG08jbghj',
-    'PAYME_URL': 'https://checkout.test.paycom.uz/api',
+    'PAYME_ID': str(os.getenv('PAYME_ID')),
+    'PAYME_KEY': str(os.getenv('PAYME_KEY')),
+    'PAYME_URL': str(os.getenv('PAYME_URL')),
     'PAYME_CALL_BACK_URL': 'https://www.youtube.com',
     'PAYME_MIN_AMOUNT': 1000,
     'PAYME_ACCOUNT': 'order_id',

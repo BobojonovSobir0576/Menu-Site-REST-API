@@ -29,10 +29,22 @@ from jsonschema import Draft7Validator
 from payme.receipts.subscribe_receipts import *
 
 
+from environs import Env
+
+import os
+import sys
+
+from dotenv import load_dotenv
+load_dotenv()
+
+env = Env()
+env.read_env()
+
+
 payment = PaymeSubscribeReceipts(
-    base_url =  'https://checkout.test.paycom.uz/api',
-    paycom_id = '5e730e8e0b852a417aa49ceb',
-    paycom_key = 'ZPDODSiTYKuX0jyO7Kl2to4rQbNwG08jbghj'
+    base_url = str(os.getenv('PAYME_URL')),
+    paycom_id = str(os.getenv('PAYME_ID')),
+    paycom_key = str(os.getenv('PAYME_KEY'))
 )
 
 
