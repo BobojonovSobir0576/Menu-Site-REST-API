@@ -132,6 +132,16 @@ class UserLogoutView(APIView):
 
         return Response(status=status.HTTP_205_RESET_CONTENT)
     
+    
+class RestaurantView(APIView):
+    render_classes = [UserRenderers]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request,format=None):
+        get_res = Restaurant.objects.filter(author__in = request.user)
+        serializer = RestaurantSerializers(get_res)
+        return Response(serializer.data,status=status.HTTP_200_OK)    
+
 #CATALOG
 class CatalogListViews(APIView):
     render_classes = [UserRenderers]

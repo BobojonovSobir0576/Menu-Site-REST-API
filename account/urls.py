@@ -6,6 +6,8 @@ urlpatterns = [
     path('logout_user/',views.UserLogoutView.as_view()),
     path('profile_user/',views.UserProfilesView.as_view()),
     
+    path('restaurant_object/',views.RestaurantView.as_view()),
+    
     path('lists_catalog/',views.CatalogListViews.as_view()),
     path('details_catalog/<int:id>/',views.CatalogDetailViews.as_view()),
     
