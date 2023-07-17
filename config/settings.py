@@ -192,14 +192,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # AUTH_USER_MODEL = 'kpi_app.CustomUser'
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://localhost:5173",
     "http://31.129.97.46",
-    "http://www.menu-edge.uz/"
     "http://menu-edge.uz/"
 ]
 
