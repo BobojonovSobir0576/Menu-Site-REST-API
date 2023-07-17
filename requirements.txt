@@ -5,6 +5,7 @@ charset-normalizer==3.1.0
 dataclasses==0.6
 Django==4.2.2
 django-cors-headers==4.1.0
+django-environ==0.10.0
 django-filter==23.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
@@ -16,6 +17,7 @@ packaging==23.1
 payme-pkg==2.2
 Pillow==9.5.0
 psycopg==3.1.9
+psycopg2-binary==2.9.6
 PyJWT==2.7.0
 pyrsistent==0.19.3
 python-dotenv==1.0.0
