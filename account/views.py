@@ -140,7 +140,7 @@ class RestaurantView(APIView):
     def get(self,request,format=None):
         res = Restaurant.objects.filter(author = request.user)
         serializers = RestaurantSerializers(res,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)    
+        return Response(serializers.data,status=status.HTTP_200_OK)    
 
 #CATALOG
 class CatalogListViews(APIView):
