@@ -138,11 +138,8 @@ class RestaurantView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,format=None):
-        print(request.user.username)
-        print(request.user)
-        get_res = Restaurant.objects.filter(author = request.user)
-        print(get_res)
-        serializer = RestaurantSerializers(get_res)
+        res = Restaurant.objects.filter(author = request.user)
+        serializers = RestaurantSerializers(res,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)    
 
 #CATALOG
