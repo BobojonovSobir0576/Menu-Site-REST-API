@@ -140,7 +140,7 @@ class RestaurantView(APIView):
     def get(self,request,format=None):
         print(request.user.username)
         print(request.user)
-        get_res = Restaurant.objects.filter(author__username__in = request.user.username)
+        get_res = Restaurant.objects.filter(author = request.user)
         print(get_res)
         serializer = RestaurantSerializers(get_res)
         return Response(serializer.data,status=status.HTTP_200_OK)    
