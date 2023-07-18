@@ -16,8 +16,6 @@ marshmallow==3.19.0
 packaging==23.1
 payme-pkg==2.2
 Pillow==9.5.0
-psycopg==3.1.9
-psycopg2-binary==2.9.6
 PyJWT==2.7.0
 pyrsistent==0.19.3
 python-dotenv==1.0.0

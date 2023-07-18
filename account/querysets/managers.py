@@ -25,8 +25,6 @@ class RestaurantQuerySet(models.QuerySet):
         created_at = get_restaurant.create_at 
         add_one_month = created_at + timedelta(days=last_date_of_month)
         interval_of_two_dates = add_one_month - date.today()
-        print(interval_of_two_dates.days)
-        print(get_restaurant.is_payment)
         if (int(interval_of_two_dates.days) <= 0) or (int(interval_of_two_dates.days) > 0 and get_restaurant.is_payment == False):
             get_restaurant.price = 0
             get_restaurant.is_payment = False

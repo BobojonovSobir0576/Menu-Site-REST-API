@@ -17,7 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name','id','price','gramms','catalog')
 
 
-@admin.register(SaveProduct)
+@admin.register(SaveOrder)
 class SaveProductAdmin(admin.ModelAdmin):
     list_display = ('full_name','id','phone')
 

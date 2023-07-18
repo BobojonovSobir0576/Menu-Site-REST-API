@@ -38,19 +38,7 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-class SaveProduct(models.Model):
-    full_name = models.CharField(max_length=150,null=True,blank=True)
-    phone = models.CharField(max_length=150,null=True,blank=True)
-    detailed_data = models.JSONField(null=True,blank=True)
-    comment = models.TextField(null=True,blank=True)
-    files = models.FileField( upload_to='save_product',blank=True,null=True)
-    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,blank=True)
-    created_at = models.DateField(auto_now_add=True)
     
-    obj = SaveProductManager()
-    
-    def __str__(self):
-        return self.full_name
     
     
 
@@ -59,3 +47,18 @@ class Order(models.Model):
     token = models.TextField(blank=True,null=True)
     phone = models.CharField(max_length=150)
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,blank=True,null=True)
+    
+    
+class SaveOrder(models.Model):
+    full_name = models.CharField(max_length=150,null=True,blank=True)
+    phone = models.CharField(max_length=150,null=True,blank=True)
+    detailed_data = models.JSONField(null=True,blank=True)
+    comment = models.TextField(null=True,blank=True)
+    files = models.FileField(upload_to='save_product',blank=True,null=True)
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,blank=True)
+    created_at = models.DateField(auto_now_add=True)
+    
+    obj = SaveProductManager()
+    
+    def __str__(self):
+        return self.full_name

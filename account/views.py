@@ -63,36 +63,41 @@ class UserLoginView(APIView):
     def post(self,request,format=None):
         serializers = UserLoginSerializers(data=request.data, partial=True)
         if serializers.is_valid(raise_exception=True):
-            
             username = serializers.data['username']
             password = serializers.data['password']
             token = ''
             if username=='' and password=='':
                 return Response({'error':{'none_filed_error':['Username or password is not write']}},status=status.HTTP_204_NO_CONTENT)
             user = authenticate(username=username, password=password)    
-            print(user)
             if user is None:
                 return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
+            elif len(user.groups.all().filter(name='Servant')) != 0:
+                is_pay = "Servant"
+                token = get_token_for_user(user)
+                return Response({'token':token,'message':serializers.data,'is_payment':is_pay,},status=status.HTTP_200_OK)
             else:
                 token = get_token_for_user(user)
                 get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
                 get_restaurant = Restaurant.objects.check_is_payment(user)
-                get_token = Order.objects.filter(restaurant__author=user).first()
+                check_token_in_order = Order.objects.filter(restaurant__author=user).first()
                 print(get_restaurant)
-                print(get_token)
+                print(check_token_in_order)
                 if get_restaurant:
                     print(1)
                     is_pay = "Payed"
                     token = get_token_for_user(user)
                     return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
-                elif get_token == None:
+                elif check_token_in_order == None:
                     print(2)
-                    is_pay = "IsNotPayed"
+                    is_pay = "NeverPaid"
                     token = get_token_for_user(user)
+                    get_user_restaurant.price = 0
+                    get_user_restaurant.is_payment = False
+                    get_user_restaurant.save()
                     return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
                 else:
                     print(3)
-                    amount = 1000
+                    amount = 150000
                     order_id = random.randint(1, 999)
                     receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
                     receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
@@ -110,7 +115,7 @@ class UserLoginView(APIView):
                         get_user_restaurant.is_payment = True
                         get_user_restaurant.create_at = date.today()
                         get_user_restaurant.save()
-                    
+
                 return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
@@ -185,7 +190,7 @@ class CatalogDetailViews(APIView):
         queryset.delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
-# PRODUCT
+# PRODUCT   
 class ProductListViews(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
@@ -213,7 +218,6 @@ class ProductFilterView(generics.ListAPIView):
     
     def get(self, request, format=None):
         search_name = request.query_params.get('search_name', '')
-        print(search_name)
         product = Product.objects.filter((Q(name__icontains=search_name)))
         serializers = self.serializer_class(product, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
@@ -288,24 +292,26 @@ class ProductSaveView(APIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
     
+    def get(self,request,format=None):
+        save_product  = SaveOrder.obj.get_product_with_author(request.user)
+        serializers = ProductSaveListSerializers(save_product,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
+    
+    
     def post(self,request,format=None):
         restaurant = Restaurant.objects.filter(author = request.user)[0]
-        serializer=ProductSaveSerializers(data=request.data)
-        if serializer.is_valid():
+        serializer = ProductSave(data=request.data)
+        if serializer.is_valid(raise_exception=True):
             serializer.save(files = request.FILES.get('files',None),restaurant=restaurant)
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)  
     
-    def get(self,request,format=None):
-        save_product  = SaveProduct.obj.get_product_with_author(request.user)
-        serializers = ProductSaveListSerializers(save_product,many=True)
-        return Response(serializers.data,status=status.HTTP_200_OK)
     
 
 class ProductSaveFilterView(generics.ListAPIView):
     render_classes = [UserRenderers]
     permission_classes = [IsAuthenticated]
-    queryset = SaveProduct.obj.all()
+    queryset = SaveOrder.obj.all()
     serializer_class = ProductSaveListSerializers
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['full_name','phone']
@@ -317,12 +323,12 @@ class ProductSaveDetailsView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,id,format=None):
-        save_product  = get_object_or_404(SaveProduct,id=id)
+        save_product  = get_object_or_404(SaveOrder,id=id)
         serializers = ProductSaveListSerializers(save_product)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
     def put(self,request,id,format=None):
-        get_by_id = get_object_or_404(SaveProduct,id=id)
+        get_by_id = get_object_or_404(SaveOrder,id=id)
         serializer=ProductSaveSerializers(instance=get_by_id,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save(files = request.FILES.get('files',None))
@@ -330,7 +336,7 @@ class ProductSaveDetailsView(APIView):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self,request,id,format=None):
-        get_by_id = get_object_or_404(SaveProduct,id=id).delete()
+        get_by_id = get_object_or_404(SaveOrder,id=id).delete()
         return Response({'message':'deleted successfully'},status=status.HTTP_200_OK)
     
     

@@ -13,14 +13,16 @@ from account.models import *
 import json
 
 
-class ProductSaveSerializers(serializers.ModelSerializer):
+class ProductSave(serializers.ModelSerializer):
+    full_name = serializers.CharField(max_length=10,required=False)
     class Meta:
-        model = SaveProduct
-        fields = ['id','full_name','phone','detailed_data','comment','files','restaurant']
+        model = SaveOrder
+        fields = ('id','full_name','phone','detailed_data','comment','files','restaurant')
+        
     
     
 class ProductSaveListSerializers(serializers.ModelSerializer):
     restaurant = RestaurantSerializers(read_only=True)
     class Meta:
-        model = SaveProduct
+        model = SaveOrder
         fields = ['id','full_name','phone','detailed_data','comment','files','restaurant']
