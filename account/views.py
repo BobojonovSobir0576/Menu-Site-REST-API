@@ -100,7 +100,7 @@ class UserLoginView(APIView):
                     amount = 150000
                     order_id = random.randint(1, 999)
                     receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
-                    receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
+                    receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=check_token_in_order.token, phone=check_token_in_order.phone)
                     print(receipt_pay_credential)
                     if receipt_pay_credential['error']['code'] == -31630:
                         print(4)
