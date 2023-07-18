@@ -54,13 +54,9 @@ class Payment(APIView):
     
     def post(self,request,unique_id,format=None):
         get_token = get_object_or_404(Order,unique_id=unique_id)
-        amount = request.POST.get('amount')   
+        amount = request.data['amount']  
         order_id = random.randint(1, 999)
-        receipt_create_credential =  payment.receipts_create(amount=amount, order_id=order_id)
+        receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=order_id)
         receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
         restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).update(create_at = date.today(),is_payment=True,price=int(amount))
-        print(receipt_create_credential)
-        print(receipt_create_credential['result']['receipt']['_id'])
-        print()
-        print(receipt_pay_credential)
         return Response({'data':'Success'},status=status.HTTP_200_OK)
