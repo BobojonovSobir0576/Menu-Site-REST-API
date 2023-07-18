@@ -329,7 +329,7 @@ class ProductSaveDetailsView(APIView):
     
     def put(self,request,id,format=None):
         get_by_id = get_object_or_404(SaveOrder,id=id)
-        serializer=ProductSaveSerializers(instance=get_by_id,data=request.data,partial=True)
+        serializer=ProductSave(instance=get_by_id,data=request.data,partial=True)
         if serializer.is_valid():
             serializer.save(files = request.FILES.get('files',None))
             return Response(serializer.data,status=status.HTTP_201_CREATED)
