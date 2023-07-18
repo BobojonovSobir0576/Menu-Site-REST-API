@@ -25,9 +25,9 @@ from payme.receipts.subscribe_receipts import PaymeSubscribeReceipts
 
 
 payment = PaymeSubscribeReceipts(
-    base_url =  'https://checkout.test.paycom.uz/api',
-    paycom_id = '5e730e8e0b852a417aa49ceb',
-    paycom_key = 'ZPDODSiTYKuX0jyO7Kl2to4rQbNwG08jbghj'
+    base_url = 'https://checkout.paycom.uz/api',
+    paycom_id = '64a7e800a58caefa2d34e657',
+    paycom_key = 'c2UiZh8Um8kjgtTV32h76MZpcXw8M0qj%7Nm'
 )
 
 
