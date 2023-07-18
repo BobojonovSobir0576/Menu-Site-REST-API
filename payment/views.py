@@ -22,7 +22,7 @@ from payment.payme.receipts import *
 
 from payme.receipts.subscribe_receipts import PaymeSubscribeReceipts
 
-
+import random
 
 payment = PaymeSubscribeReceipts(
     base_url = 'https://checkout.paycom.uz/api',
@@ -54,8 +54,9 @@ class Payment(APIView):
     
     def post(self,request,unique_id,format=None):
         get_token = get_object_or_404(Order,unique_id=unique_id)
-        amount = request.data['amount']   
-        receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=1)
+        amount = request.POST.get('amount')   
+        order_id = random.randint(1, 999)
+        receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=order_id)
         receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
         restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).update(create_at = date.today(),is_payment=True,price=amount)
-        return Response({'data':'Success'},receipt_pay_credential,status=status.HTTP_200_OK)
+        return Response({'data':'Success'},status=status.HTTP_200_OK)
