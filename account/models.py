@@ -31,15 +31,12 @@ class Product(models.Model):
     name = models.CharField(max_length=150,null=True,blank=True)
     img = models.ImageField(upload_to = 'product/')
     price = models.IntegerField(default=0)
-    gramms = models.FloatField(default=0)
-    description = models.TextField()
+    gramms = models.FloatField(default=0,null=True,blank=True)
+    description = models.TextField(null=True,blank=True)
     catalog = models.ForeignKey(Catalog, on_delete = models.CASCADE,null=True,blank=True)
     
     def __str__(self):
         return self.name
-    
-    
-    
     
 
 class Order(models.Model):

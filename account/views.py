@@ -156,7 +156,7 @@ class CatalogListViews(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
-        catalogs = Catalog.objects.prefetch_related('restaurant').filter(restaurant__author = request.user)
+        catalogs = Catalog.objects.prefetch_related('restaurant').filter(restaurant__author = request.user).order_by('-id')
         serializers = CatalogDeatilSerializers(catalogs,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
@@ -196,7 +196,7 @@ class ProductListViews(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self, request, format=None):
-        products = Product.objects.prefetch_related('catalog').filter(catalog__restaurant__author = request.user)
+        products = Product.objects.prefetch_related('catalog').filter(catalog__restaurant__author = request.user).order_by('-id')
         serializers = ProductDeatilSerializers(products,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
@@ -293,7 +293,7 @@ class ProductSaveView(APIView):
     permission_classes = [IsAuthenticated]
     
     def get(self,request,format=None):
-        save_product  = SaveOrder.obj.get_product_with_author(request.user)
+        save_product  = SaveOrder.obj.get_product_with_author(request.user).order_by('-id')
         serializers = ProductSaveListSerializers(save_product,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK)
     
