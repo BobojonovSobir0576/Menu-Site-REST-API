@@ -58,4 +58,4 @@ class Payment(APIView):
         receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=1)
         receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
         restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).update(create_at = date.today(),is_payment=True,price=amount)
-        return Response({'data':'Success'},status=status.HTTP_200_OK)
+        return Response({'data':'Success'},receipt_pay_credential,status=status.HTTP_200_OK)
