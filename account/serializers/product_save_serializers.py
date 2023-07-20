@@ -9,6 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from account.serializers.res_serializers import *
 from account.models import *
+from account.serializers.serializers import *
 
 import json
 
@@ -36,6 +37,7 @@ class ProductSave(serializers.ModelSerializer):
     
 class ProductSaveListSerializers(serializers.ModelSerializer):
     restaurant = RestaurantSerializers(read_only=True)
+    author = UserPorfilesSerializers(read_only=True)
     class Meta:
         model = SaveOrder
-        fields = ['id','full_name','phone','detailed_data','comment','files','restaurant']
+        fields = ['id','full_name','phone','detailed_data','comment','files','restaurant','author']
