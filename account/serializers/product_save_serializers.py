@@ -20,7 +20,10 @@ class ProductSave(serializers.ModelSerializer):
         fields = ('id','full_name','phone','detailed_data','comment','files','restaurant')
         
     def create(self, validated_data):
-        return SaveOrder.obj.create(**validated_data)
+        create = SaveOrder.obj.create(**validated_data)
+        create.author = self.context.get('user')
+        create.save()
+        return create
     
     def update(self, instance, validated_data):
         instance.full_name = validated_data.get('full_name',instance.full_name)

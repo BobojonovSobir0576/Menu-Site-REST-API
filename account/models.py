@@ -52,6 +52,7 @@ class SaveOrder(models.Model):
     detailed_data = models.JSONField(null=True,blank=True)
     comment = models.TextField(null=True,blank=True)
     files = models.FileField(upload_to='save_product',blank=True,null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,null=True,blank=True)
     created_at = models.DateField(auto_now_add=True)
     

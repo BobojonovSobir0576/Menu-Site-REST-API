@@ -164,7 +164,7 @@ class CatalogListViews(APIView):
         serializers = CatalogListSerializers(data=request.data,context={'img':request.FILES.get('img',None),'user':request.user})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(serializers.data,status=status.HTTP_201_CREATED)
+            return Response(serializers.data,status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -300,7 +300,7 @@ class ProductSaveView(APIView):
     
     def post(self,request,format=None):
         restaurant = Restaurant.objects.filter(author = request.user)[0]
-        serializer = ProductSave(data=request.data)
+        serializer = ProductSave(data=request.data,context={'user':request.user})
         if serializer.is_valid(raise_exception=True):
             serializer.save(files = request.FILES.get('files',None),restaurant=restaurant)
             return Response(serializer.data,status=status.HTTP_201_CREATED)

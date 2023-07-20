@@ -46,7 +46,10 @@ class RestaurantManager(models.Manager):
 # Save Product
 class SaveProductQuerySet(models.QuerySet):
     def get_product_with_author(self,user):
-        return self.prefetch_related('restaurant').filter(restaurant__author = user)
+        for i in user.groups.all():
+            if i.name == 'Servant':
+               return self.prefetch_related('author').filter(author = user)                 
+            return self.prefetch_related('restaurant').filter(restaurant__author = user)
 
     def get_by_id(self,id):
         return self.filter(id=id)
