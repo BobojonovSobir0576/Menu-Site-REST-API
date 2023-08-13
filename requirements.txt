@@ -15,13 +15,14 @@ marshmallow==3.19.0
 packaging==23.1
 payme-pkg==2.2
 Pillow==9.5.0
-psycopg2==2.9.6
+psycopg==3.1.9
 PyJWT==2.7.0
 pyrsistent==0.19.3
 python-dotenv==1.0.0
 pytz==2023.3
 requests==2.31.0
 sqlparse==0.4.4
+typing_extensions==4.7.1
 tzdata==2023.3
 urllib3==2.0.3
 uuid==1.30
