@@ -20,3 +20,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(SaveProduct)
 class SaveProductAdmin(admin.ModelAdmin):
     list_display = ('full_name','id','phone')
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('token','restaurant','unique_id')

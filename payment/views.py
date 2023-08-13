@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from account.renderers import *
+from account.models import *
 from payment.models import *
 from payment.payme.cards import *
 from payment.payme.receipts import *
@@ -39,7 +40,7 @@ class VirifyCardView(APIView):
         token = request.data['token']
         phone = request.data['phone']
         get_restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).first()
-        create = OrderRestaurant.objects.create(
+        create = Order.objects.create(
             token = token,
             phone = phone,
             restaurant = get_restaurant
@@ -54,7 +55,7 @@ class Payment(APIView):
     def post(self,request,unique_id,format=None):
         amount = request.data['amount']   
         receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id=1)
-        get_token = OrderRestaurant.objects.filter(unique_id=unique_id).first()
+        get_token = Order.objects.filter(unique_id=unique_id).first()
         receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
-        receipt_send_credential = payment.receipts_send(invoice_id = receipt_pay_credential['result']['receipt']['_id'], phone=get_token.phone)
-        return Response({'data':receipt_send_credential},status=status.HTTP_200_OK)
+        restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).update(create_at = date.today(),is_payment=True,price=amount)
+        return Response({'data':'Success'},status=status.HTTP_200_OK)

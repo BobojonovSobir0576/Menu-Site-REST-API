@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import *
 from account.querysets.managers import *
+import uuid
 
 
 class Restaurant(models.Model):
@@ -49,3 +50,11 @@ class SaveProduct(models.Model):
     
     def __str__(self):
         return self.full_name
+    
+    
+
+class Order(models.Model):
+    unique_id = models.UUIDField('ID',default=uuid.uuid4, editable=False, unique=True)
+    token = models.TextField(blank=True,null=True)
+    phone = models.CharField(max_length=150)
+    restaurant = models.ForeignKey(Restaurant, on_delete = models.CASCADE,blank=True,null=True)

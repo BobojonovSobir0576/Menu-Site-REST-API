@@ -1,18 +1,25 @@
-<form method="POST" action="https://checkout.paycom.uz"> <input type="hidden" name="merchant" value="64a7e800a58caefa2d34e657"/> <input type="hidden" name="amount" value="35000000"/>
-
-
-    <button type="submit" style="cursor: pointer;
-    border: 1px solid #ebebeb;
-    border-radius: 6px;
-    background: linear-gradient(to top, #f1f2f2, white);
-    width: 54px;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    "> <img style="width: 42px;
-    height: 42px;
-    " src="http://cdn.payme.uz/buttons/button_medium_RU.svg"> </button>
-    
-    
-    </form>
+receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
+            get_token = Order.objects.filter(restaurant__author=user).first()
+            receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
+            if receipt_pay_credential:
+                get_restaurant.create_at = date.today()
+                get_restaurant.price = 0
+                get_restaurant.is_payment = False
+                get_restaurant.save()
+            else:
+                return "Ma'lumot xato"
+            return 'Qayata Render qilish'
+        elif int(interval_of_two_dates.days) >= 0 and get_restaurant.is_payment == False:
+            receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
+            get_token = Order.objects.filter(restaurant__author=user).first()
+            receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
+            if receipt_pay_credential:
+                get_restaurant.create_at = date.today()
+                get_restaurant.price = 0
+                get_restaurant.is_payment = False
+                get_restaurant.save()
+            else:
+                return "Ma'lumot xato"
+            return 'Qayata Render qilish'
+        else:
+            return True

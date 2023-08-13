@@ -21,8 +21,17 @@ from account.serializers.product_save_serializers import *
 from account.renderers import *
 from account.models import *
 
-import jsonschema
+import jsonschema,random
 from jsonschema import Draft7Validator
+
+from payme.receipts.subscribe_receipts import *
+
+
+payment = PaymeSubscribeReceipts(
+    base_url =  'https://checkout.test.paycom.uz/api',
+    paycom_id = '5e730e8e0b852a417aa49ceb',
+    paycom_key = 'ZPDODSiTYKuX0jyO7Kl2to4rQbNwG08jbghj'
+)
 
 
 def get_token_for_user(user):
@@ -42,15 +51,40 @@ class UserLoginView(APIView):
         if serializers.is_valid(raise_exception=True):
             username = serializers.data['username']
             password = serializers.data['password']
+            token = ''
             if username=='' and password=='':
                 return Response({'error':{'none_filed_error':['Username or password is not write']}},status=status.HTTP_204_NO_CONTENT)
             user = authenticate(username=username, password=password)    
+            token = get_token_for_user(user)
+            get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
+            
             if user is None:
                 return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
             else:
                 get_restaurant = Restaurant.objects.check_is_payment(user)
-                token = get_token_for_user(user)
-                return Response({'token':token,'message':serializers.data,'is_payment':get_restaurant},status=status.HTTP_200_OK)
+                if get_restaurant:
+                    is_pay = "Payed"
+                    token = get_token_for_user(user)
+                    return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
+                else:
+                    amount = 1000
+                    order_id = random.randint(1, 999)
+                    receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
+                    get_token = Order.objects.filter(restaurant__author=user).first()
+                    receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
+                    if receipt_pay_credential['error']['code'] == -31630:
+                        is_pay = "IsNotPayed"
+                        get_user_restaurant.price = 0
+                        get_user_restaurant.is_payment = False
+                        get_user_restaurant.save()
+                    else:
+                        is_pay = "Payed"
+                        get_user_restaurant.price = amount
+                        get_user_restaurant.is_payment = True
+                        get_user_restaurant.create_at = date.today()
+                        get_user_restaurant.save()
+                    
+                return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
