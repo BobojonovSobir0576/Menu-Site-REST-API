@@ -33,11 +33,6 @@ class RestaurantQuerySet(models.QuerySet):
             return False
         return True      
             
-        
-        
-            
-            
-            
 
 class RestaurantManager(models.Manager):
     

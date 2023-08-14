@@ -57,27 +57,38 @@ class UserLoginView(APIView):
             user = authenticate(username=username, password=password)    
             token = get_token_for_user(user)
             get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
-            
             if user is None:
                 return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
             else:
                 get_restaurant = Restaurant.objects.check_is_payment(user)
+                get_token = Order.objects.filter(restaurant__author=user).first()
+                print(get_token)
                 if get_restaurant:
+                    print(1)
                     is_pay = "Payed"
                     token = get_token_for_user(user)
                     return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
+                elif get_token == None:
+                    print(2)
+                    is_pay = "IsNotPayed"
+                    token = get_token_for_user(user)
+                    return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
                 else:
+                    print(3)
+                    # if get_token == None:
                     amount = 1000
                     order_id = random.randint(1, 999)
                     receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
-                    get_token = Order.objects.filter(restaurant__author=user).first()
                     receipt_pay_credential = payment.receipts_pay(invoice_id=receipt_create_credential['result']['receipt']['_id'], token=get_token.token, phone=get_token.phone)
+                    print(receipt_pay_credential)
                     if receipt_pay_credential['error']['code'] == -31630:
+                        print(4)
                         is_pay = "IsNotPayed"
                         get_user_restaurant.price = 0
                         get_user_restaurant.is_payment = False
                         get_user_restaurant.save()
                     else:
+                        print(5)
                         is_pay = "Payed"
                         get_user_restaurant.price = amount
                         get_user_restaurant.is_payment = True
