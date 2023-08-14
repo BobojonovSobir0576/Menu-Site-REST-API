@@ -110,16 +110,12 @@ class UserProfilesView(APIView):
 class UserLogoutView(APIView):
     permission_classes  = [IsAuthenticated]
     
-    def post(self, request, *args, **kwargs):
-        if self.request.data.get('all'):
-            token: OutstandingToken
-            for token in OutstandingToken.objects.filter(user=request.user):
-                _, _ = BlacklistedToken.objects.get_or_create(token=token)
-            return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
-        refresh_token = self.request.data.get('refresh_token')
-        token = RefreshToken(token=refresh_token)
-        token.blacklist()
-        return Response({"status": "OK, goodbye"})
+    def post(self, request):
+        tokens = OutstandingToken.objects.filter(user_id=request.user.id)
+        for token in tokens:
+            t, _ = BlacklistedToken.objects.get_or_create(token=token)
+
+        return Response(status=status.HTTP_205_RESET_CONTENT)
     
 
 class CatalogListViews(APIView):
@@ -135,7 +131,7 @@ class CatalogListViews(APIView):
         serializers = CatalogListSerializers(data=request.data,context={'img':request.FILES.get('img',None),'user':request.user})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializers.data,status=status.HTTP_201_CREATED)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 #CATALOG
@@ -175,7 +171,7 @@ class ProductListViews(APIView):
         serializers = ProductListSerializers(data=request.data,context={'img':request.FILES.get('img',None),'user':request.user})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializers.data,status=status.HTTP_201_CREATED)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -217,7 +213,7 @@ class CustomUserListViews(APIView):
         serializers = UserListSerializers(data=request.data,context={'user':request.user})
         if serializers.is_valid(raise_exception=True):
             serializers.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializers.data,status=status.HTTP_201_CREATED)
         return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
     
 
