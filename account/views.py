@@ -55,11 +55,11 @@ class UserLoginView(APIView):
             if username=='' and password=='':
                 return Response({'error':{'none_filed_error':['Username or password is not write']}},status=status.HTTP_204_NO_CONTENT)
             user = authenticate(username=username, password=password)    
-            token = get_token_for_user(user)
-            get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
             if user is None:
                 return Response({'error':{'none_filed_error':['Username or password is not valid']}},status=status.HTTP_404_NOT_FOUND)
             else:
+                token = get_token_for_user(user)
+                get_user_restaurant = Restaurant.objects.prefetch_related('author').filter(author = user)[0]
                 get_restaurant = Restaurant.objects.check_is_payment(user)
                 get_token = Order.objects.filter(restaurant__author=user).first()
                 print(get_token)
@@ -75,7 +75,6 @@ class UserLoginView(APIView):
                     return Response({'token':token,'message':serializers.data,'is_payment':is_pay,'price':get_user_restaurant.price},status=status.HTTP_200_OK)
                 else:
                     print(3)
-                    # if get_token == None:
                     amount = 1000
                     order_id = random.randint(1, 999)
                     receipt_create_credential =  payment.receipts_create(amount=int(amount), order_id = order_id)
