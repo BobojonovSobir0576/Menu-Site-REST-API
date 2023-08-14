@@ -36,7 +36,7 @@ class VirifyCardView(APIView):
     render_classes = [UserRenderers]
     perrmisson_class = [IsAuthenticated]
     
-    def post(self,requests,format=None):
+    def post(self,request,format=None):
         token = request.data['token']
         phone = request.data['phone']
         get_restaurant = Restaurant.objects.prefetch_related('author').filter(author = request.user).first()
